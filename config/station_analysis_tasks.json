@@ -1,0 +1,138 @@
+{
+  "description": "站点舆情/体验分析任务口径。用于结果解释与占比统计，不参与 BERTopic embedding 聚类。",
+  "impact_weights": {
+    "liked_count": 1.0,
+    "collected_count": 1.5,
+    "comment_count": 2.0,
+    "share_count": 3.0
+  },
+  "api_categories": {
+    "navigation_guidance": "站内导航/导向标识",
+    "transport_connection": "站内服务/交通接驳",
+    "passenger_flow_efficiency": "站内服务/进站安检与客流效率",
+    "commercial_waiting": "站内环境/候车商业与舒适度",
+    "environment_hygiene": "站内环境/卫生与空间体验",
+    "digital_information": "智慧化/信息化",
+    "station_comparison": "站区/车站比较",
+    "facility_accessibility": "站内服务/设施可达与无障碍",
+    "staff_management": "站内服务/人员服务与现场管理",
+    "safety_emergency": "站内服务/安全秩序与突发处置"
+  },
+  "task_groups": {
+    "station_navigation": {
+      "label": "站内导航",
+      "categories": [
+        "navigation_guidance"
+      ],
+      "keywords": [
+        "指示",
+        "寻路",
+        "导向",
+        "导视",
+        "标识",
+        "指示牌",
+        "问询",
+        "导航",
+        "路线",
+        "动线",
+        "检票口",
+        "进站口",
+        "出站口",
+        "南北广场",
+        "地下通道"
+      ]
+    },
+    "station_service_transport": {
+      "label": "站内服务/交通接驳",
+      "categories": [
+        "transport_connection",
+        "passenger_flow_efficiency",
+        "staff_management",
+        "facility_accessibility",
+        "safety_emergency"
+      ],
+      "keywords": [
+        "网约车",
+        "出租车",
+        "自驾",
+        "公交",
+        "地铁",
+        "打车",
+        "接站",
+        "送站",
+        "换乘",
+        "停车",
+        "安检",
+        "检票",
+        "候车",
+        "服务",
+        "工作人员",
+        "电梯",
+        "扶梯",
+        "乘警",
+        "秩序"
+      ]
+    },
+    "station_environment": {
+      "label": "站内环境",
+      "categories": [
+        "environment_hygiene",
+        "commercial_waiting"
+      ],
+      "keywords": [
+        "环境",
+        "卫生",
+        "厕所",
+        "异味",
+        "垃圾",
+        "吸烟",
+        "二手烟",
+        "噪音",
+        "拥挤",
+        "温度",
+        "空调",
+        "空间",
+        "舒适度"
+      ]
+    },
+    "smart_information": {
+      "label": "智慧化/信息化",
+      "categories": [
+        "digital_information"
+      ],
+      "keywords": [
+        "智慧",
+        "信息化",
+        "电子屏",
+        "屏幕",
+        "广播",
+        "通知",
+        "晚点",
+        "车次",
+        "实时",
+        "系统",
+        "改签",
+        "信息提示"
+      ]
+    },
+    "station_comparison": {
+      "label": "站区/车站比较",
+      "categories": [
+        "station_comparison"
+      ],
+      "keywords": [
+        "对比",
+        "比较",
+        "哪个站",
+        "北京站",
+        "北京南站",
+        "北京丰台",
+        "丰台站",
+        "上海虹桥",
+        "广州南站",
+        "做得好",
+        "做得不好"
+      ]
+    }
+  }
+}
