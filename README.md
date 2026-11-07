@@ -24,7 +24,61 @@
 
 ---
 
-## 二、脚本清单
+## 二、大模型（LLM）部分
+
+这是整条流水线的核心：**用 Qwen3.6-27B 多模态模型逐帖读图+读文+读评论，产出结构化描述与分类**。
+
+### 涉及的文件
+
+| 文件 | 角色 |
+|---|---|
+| [`pipeline/analyze_notes.py`](pipeline/analyze_notes.py) | **主推理脚本**（264 行）：加载 Qwen3.6-27B，构造多模态输入，逐帖生成 `description` + `category`，每 5 条落盘、支持断点续跑 |
+| [`pipeline/process_comments.py`](pipeline/process_comments.py) | 前置：把评论 xlsx 按 note_id 拆进各帖子目录 `comment.json` |
+| [`pipeline/run_sentiment.py`](pipeline/run_sentiment.py) | 后置：BERT 情感模型打 Positive/Negative + 5 类业务口径 |
+| [`tools/caption_xizhan_qwen3vl.py`](tools/caption_xizhan_qwen3vl.py) | 另一条支线：用 **Qwen3-VL** 给配图生成中文描述（双卡、断点续跑） |
+| [`tools/caption_xizhan_media.py`](tools/caption_xizhan_media.py) | 上者的封装：输出「图片相对路径 → 中文描述」JSON |
+| [`tools/benchmark_qwen3vl_batch.py`](tools/benchmark_qwen3vl_batch.py) | 单卡不同 batch size 的吞吐基准 |
+
+### 输入格式（每个帖子一个目录）
+
+```
+<station>_media/<note_id>/
+├── info.json        # 帖子元数据：title / desc / liked_count / tags / upload_time
+├── detail.txt       # 帖子详情快照
+├── image_0.jpg …    # 配图，最多取 4 张
+└── comment.json     # 评论，由 process_comments.py 生成
+```
+
+`analyze_notes.py` 里的 `STATION_CONFIG` 为 10 个站点写死了 `data_dir` 与 `output` 路径（旧机 `/home/lu.junting/station/...`），换机器要改这一处。
+
+### 模型与 Prompt
+
+- 模型：`AutoProcessor` + `AutoModelForImageTextToText`，bf16，`device_map="auto"` 多卡自动切分，`enable_thinking=False` 关掉思考链，`do_sample=False` 保证确定性。
+- 路径：脚本顶部 `MODEL_PATH = "/home/lu.junting/station/qwen-3.6"`，**约 52 GB**。
+- Prompt：System + User 两段式。System 定义 17 个分类（10 个站区服务环节 + 4 个小红书内容类 + 3 个无信息类）；User 拼「图片 + 标题 + 正文 + 互动数 + 标签 + 发布时间 + 点赞前 15 条评论」。完整文案见 [`../docs/guides/llmPart_README.md`](../docs/guides/llmPart_README.md)。
+- 解析：三级正则容错，解析失败落 `parse_error` 并用 `xhs_other` 兜底。
+
+### 输出
+
+`<station>_analysis.json`（每条含 `description`、`category`、`category_group`、`raw_response`、`num_images`），之后 `run_sentiment.py` 再补 `sentiment_label` / `sentiment_score` / `business_category_v2`。
+
+现有结果在 [`../data/llm_output/llmOutput/`](../data/llm_output/llmOutput/)：10 个站、每站 4 个文件（analysis.json + 统计报告 + 舆情分析报告 md/docx）。
+
+### ⚠ 重跑前必须自备的三样东西
+
+| 缺什么 | 说明 |
+|---|---|
+| **Qwen3.6-27B 权重（约 52 GB）** | 不在本机，原在 GPU 服务器 `/home/lu.junting/station/qwen-3.6`。本机 `data/models/` 只存了嵌入模型和 BERT 情感模型 |
+| **9 个站的 `<station>_media/` 素材目录** | 本机只有西站 `data/raw/station_data/XiZhan/XiZhan_media/`（145 个帖子）；另 8 站 + 2 机场的媒体目录不在本机，只有 `data/raw/station_xlsx/<站>/<站>_notes.xlsx` |
+| **各站评论 xlsx** | 本机有西站 `北京西站_comments_合并.xlsx`、朝阳站 `北京朝阳站_comments.xlsx`，其余站点缺 |
+
+上游的抓取/落盘工具（生成 `info.json` + `image_*.jpg` 的那一步）不在本仓库，属于外部爬虫，需另行准备。
+
+> 2026-08-29 的代码快照（`Desktop/station_代码_20260829/`）与输出快照（`Desktop/outputs/`）已逐字节比对，**31/31 代码、46/46 输出与本目录完全一致**，无独有内容，未重复收录。
+
+---
+
+## 三、脚本清单
 
 ### pipeline/ — 多模态分析流水线
 
@@ -91,7 +145,7 @@
 
 ---
 
-## 三、运行顺序
+## 四、运行顺序
 
 ```bash
 conda activate station
@@ -119,7 +173,7 @@ python topic_modeling/rerun_0905.py          # 论文主结果，输出到 data/
 
 ---
 
-## 四、⚠ 路径与依赖注意
+## 五、⚠ 路径与依赖注意
 
 1. **脚本里写死了旧绝对路径**。整理前工作区根是 `~/Documents/hhgh/station/`，数据已迁到 `data/`、`docs/`、`papers/`，共有 12 个脚本、61 处 `/Users/clsljt/...` 或 `/home/lu.junting/...` 需要按新位置改：
 
@@ -152,7 +206,7 @@ python topic_modeling/rerun_0905.py          # 论文主结果，输出到 data/
 
 ---
 
-## 五、Git
+## 六、Git
 
 ```bash
 git status       # 只跟踪 code/、根 README.md、.gitignore
