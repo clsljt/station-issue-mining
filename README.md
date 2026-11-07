@@ -5,7 +5,6 @@
 - **语言环境**：Python 3.11，conda 环境 `station`
 - **依赖**：[`requirements.txt`](requirements.txt)
 - **规模**：34 个项目脚本 + 2 个配置 JSON + 5 个 notebook，另 vendor 了第三方爬虫 Spider_XHS
-- **不在仓库里**：数据（8.4 GB）、模型权重（嵌入 2.3 GB + BERT 390 MB + Qwen3.6-27B 约 52 GB）、论文与插图。这些只在本机保留（仓库上一级的 `../data`、`../papers`），不进仓库
 
 ---
 
