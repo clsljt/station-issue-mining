@@ -30,7 +30,7 @@ from typing import Iterable
 import pandas as pd
 
 
-DEFAULT_STATION_DIR = Path("/Users/clsljt/Documents/hhgh/station")
+DEFAULT_STATION_DIR = Path(__file__).resolve().parents[2]
 DEFAULT_DATA_DIR = DEFAULT_STATION_DIR / "data"
 DEFAULT_OUTPUT_DIR = DEFAULT_STATION_DIR / "outputs"
 

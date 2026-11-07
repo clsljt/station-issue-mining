@@ -31,7 +31,7 @@ from typing import Callable
 import pandas as pd
 
 
-DEFAULT_STATION_DIR = Path("/Users/clsljt/Documents/hhgh/station")
+DEFAULT_STATION_DIR = Path(__file__).resolve().parents[2]
 DEFAULT_OUTPUT_DIR = DEFAULT_STATION_DIR / "outputs"
 DEFAULT_CLEANED_CSV = DEFAULT_OUTPUT_DIR / "cleaned_station_texts.csv"
 DEFAULT_EMBEDDING_MODEL = DEFAULT_STATION_DIR / "embModel" / "BAAI" / "bge-small-zh-v1.5"

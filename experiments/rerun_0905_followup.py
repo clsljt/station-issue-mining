@@ -14,9 +14,9 @@ import pandas as pd
 from scipy.stats import kendalltau, spearmanr
 from sklearn.metrics import cohen_kappa_score
 
-ROOT = Path(__file__).resolve().parent.parent
+ROOT = Path(__file__).resolve().parents[2]
 os.chdir(ROOT)
-OUT = Path("output/0905")
+OUT = Path("data/results/output/0905")
 
 LOG: list[str] = []
 
@@ -125,7 +125,7 @@ def normalize_llm_sentiment(value) -> str:
 
 
 records = []
-for p in sorted(Path("llmOutput").glob("*/*_analysis.json")):
+for p in sorted(Path("data/llm_output/llmOutput").glob("*/*_analysis.json")):
     for rec in json.load(p.open(encoding="utf-8")):
         if isinstance(rec, dict):
             records.append({**rec, "station": p.parent.name})

@@ -24,14 +24,14 @@ from sklearn.metrics import (
     silhouette_score,
 )
 
-ROOT = Path(__file__).resolve().parent.parent
+ROOT = Path(__file__).resolve().parents[2]
 
-MODEL_PATH = ROOT / "embModel/Qwen3-Embedding-0.6B"
+MODEL_PATH = ROOT / "data/models/embModel/Qwen3-Embedding-0.6B"
 DEFAULT_MODEL_NAME = "paraphrase-multilingual-MiniLM-L12-v2"
-DEFAULT_MODEL_FALLBACK = str(ROOT / "embModel/BAAI/bge-small-zh-v1.5")
-KEYWORD_FILTER_CONFIG_PATH = ROOT / "config/station_keyword_filter.json"
-STOPWORD_PATHS = [ROOT / "stopword.txt", ROOT / "stopinthis.txt"]
-LLM_OUTPUT_DIR = ROOT / "llmOutput"
+DEFAULT_MODEL_FALLBACK = str(ROOT / "data/models/embModel/BAAI/bge-small-zh-v1.5")
+KEYWORD_FILTER_CONFIG_PATH = ROOT / "code/config/station_keyword_filter.json"
+STOPWORD_PATHS = [ROOT / "data/dictionaries/stopword.txt", ROOT / "data/dictionaries/stopinthis.txt"]
+LLM_OUTPUT_DIR = ROOT / "data/llm_output/llmOutput"
 
 BATCH_SIZE = 16
 MIN_TEXT_LENGTH = 4

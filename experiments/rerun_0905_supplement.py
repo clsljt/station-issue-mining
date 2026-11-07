@@ -24,7 +24,7 @@ from sklearn.metrics import adjusted_rand_score
 
 import paper_common as pc
 
-OUT = pc.ROOT / "output/0905"
+OUT = pc.ROOT / "data/results/output/0905"
 FIG = OUT / "figures"
 OUT.mkdir(parents=True, exist_ok=True)
 FIG.mkdir(parents=True, exist_ok=True)

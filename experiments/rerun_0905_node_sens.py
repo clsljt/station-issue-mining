@@ -18,9 +18,9 @@ import numpy as np
 import pandas as pd
 from scipy.stats import kendalltau, spearmanr
 
-ROOT = Path(__file__).resolve().parent.parent
+ROOT = Path(__file__).resolve().parents[2]
 os.chdir(ROOT)
-OUT = Path("output/0905")
+OUT = Path("data/results/output/0905")
 
 SIMILARITY_TOP_K = 8
 SIMILARITY_THRESHOLD = 0.42
@@ -61,7 +61,7 @@ except Exception:
     DEVICE = "cpu"
 
 model = SentenceTransformer(
-    "embModel/Qwen3-Embedding-0.6B", device=DEVICE, trust_remote_code=True, local_files_only=True
+    "data/models/embModel/Qwen3-Embedding-0.6B", device=DEVICE, trust_remote_code=True, local_files_only=True
 )
 emb = model.encode(docs, batch_size=16, normalize_embeddings=True, convert_to_numpy=True,
                    show_progress_bar=False)

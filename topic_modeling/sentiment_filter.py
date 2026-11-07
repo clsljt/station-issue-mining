@@ -21,7 +21,7 @@ from pathlib import Path
 import pandas as pd
 
 
-DEFAULT_STATION_DIR = Path("/Users/clsljt/Documents/hhgh/station")
+DEFAULT_STATION_DIR = Path(__file__).resolve().parents[2]
 DEFAULT_SENTIMENT_MODEL = DEFAULT_STATION_DIR / "senModel"
 
 

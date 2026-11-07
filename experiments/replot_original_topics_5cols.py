@@ -14,9 +14,9 @@ import plotly.graph_objects as go
 from plotly.subplots import make_subplots
 from paper_common import setup_cjk_font
 
-ROOT = Path(__file__).resolve().parent.parent
-SOURCE = ROOT / "output/0623/bertopic_chinese_keywords_barchart.html"
-OUT = ROOT / "output/1020/original_10_topics_5cols"
+ROOT = Path(__file__).resolve().parents[2]
+SOURCE = ROOT / "data/results/output/0623/bertopic_chinese_keywords_barchart.html"
+OUT = ROOT / "data/results/output/1020/original_10_topics_5cols"
 
 
 def main():

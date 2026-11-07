@@ -33,17 +33,17 @@ from sklearn.metrics import (
     silhouette_score,
 )
 
-ROOT = Path(__file__).resolve().parent.parent
+ROOT = Path(__file__).resolve().parents[2]
 os.chdir(ROOT)
 
-OUT = Path("output/0905")
+OUT = Path("data/results/output/0905")
 OUT.mkdir(parents=True, exist_ok=True)
 
-MODEL_PATH = Path("embModel/Qwen3-Embedding-0.6B")
-DEFAULT_MODEL_FALLBACK = "embModel/BAAI/bge-small-zh-v1.5"
-KEYWORD_FILTER_CONFIG_PATH = Path("config/station_keyword_filter.json")
-STOPWORD_PATHS = [Path("stopword.txt"), Path("stopinthis.txt")]
-PREV_RESULT = Path("output/0623/bertopic_kmeans_results.csv")
+MODEL_PATH = Path("data/models/embModel/Qwen3-Embedding-0.6B")
+DEFAULT_MODEL_FALLBACK = "data/models/embModel/BAAI/bge-small-zh-v1.5"
+KEYWORD_FILTER_CONFIG_PATH = Path("code/config/station_keyword_filter.json")
+STOPWORD_PATHS = [Path("data/dictionaries/stopword.txt"), Path("data/dictionaries/stopinthis.txt")]
+PREV_RESULT = Path("data/results/output/0623/bertopic_kmeans_results.csv")
 
 BATCH_SIZE = 16
 MIN_TEXT_LENGTH = 4
@@ -296,7 +296,7 @@ def normalize_llm_sentiment(value) -> str:
     return "unknown"
 
 
-analysis_paths = sorted(Path("llmOutput").glob("*/*_analysis.json"))
+analysis_paths = sorted(Path("data/llm_output/llmOutput").glob("*/*_analysis.json"))
 records = []
 for p in analysis_paths:
     station = p.parent.name

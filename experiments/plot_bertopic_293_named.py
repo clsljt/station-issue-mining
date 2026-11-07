@@ -15,8 +15,8 @@ os.environ.setdefault("MPLCONFIGDIR", "/private/tmp/station_mpl")
 import pandas as pd
 from paper_common import setup_cjk_font
 
-ROOT = Path(__file__).resolve().parent.parent
-OUT = ROOT / "output/1020/bertopic_293_more_topics"
+ROOT = Path(__file__).resolve().parents[2]
+OUT = ROOT / "data/results/output/1020/bertopic_293_more_topics"
 TITLES = {
     0: "机场安检与行李服务",
     1: "丰台站出站动线设计",

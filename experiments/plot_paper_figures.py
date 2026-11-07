@@ -16,7 +16,7 @@ import pandas as pd
 
 import paper_common as pc
 
-OUT = pc.ROOT / "output/0905"
+OUT = pc.ROOT / "data/results/output/0905"
 FIG = OUT / "figures"
 FIG.mkdir(parents=True, exist_ok=True)
 

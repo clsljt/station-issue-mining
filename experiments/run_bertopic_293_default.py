@@ -27,11 +27,11 @@ import pandas as pd
 from bertopic import BERTopic
 from sklearn.feature_extraction.text import CountVectorizer
 
-ROOT = Path(__file__).resolve().parent.parent
-OUT = ROOT / "output/1020/bertopic_293_default"
-SOURCE = ROOT / "output/0905/bertopic_kmeans_results.csv"
+ROOT = Path(__file__).resolve().parents[2]
+OUT = ROOT / "data/results/output/1020/bertopic_293_default"
+SOURCE = ROOT / "data/results/output/0905/bertopic_kmeans_results.csv"
 STOPWORDS = set()
-for filename in ("stopword.txt", "stopinthis.txt"):
+for filename in ("data/dictionaries/stopword.txt", "data/dictionaries/stopinthis.txt"):
     STOPWORDS.update((ROOT / filename).read_text(encoding="utf-8").splitlines())
 
 

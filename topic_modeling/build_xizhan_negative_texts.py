@@ -22,12 +22,12 @@ from pathlib import Path
 import pandas as pd
 
 
-PROJECT_ROOT = Path(__file__).resolve().parents[1]
-DEFAULT_DATA_DIR = PROJECT_ROOT / "data" / "XiZhan"
-DEFAULT_OUTPUT = PROJECT_ROOT / "output" / "0623" / "xizhan_negative_texts.csv"
+PROJECT_ROOT = Path(__file__).resolve().parents[2]
+DEFAULT_DATA_DIR = PROJECT_ROOT / "data" / "raw" / "station_data" / "XiZhan"
+DEFAULT_OUTPUT = PROJECT_ROOT / "data" / "results" / "output" / "0623" / "xizhan_negative_texts.csv"
 
 # Reuse the project's established cleaning and sentiment implementations.
-sys.path.insert(0, str(PROJECT_ROOT / "scripts"))
+sys.path.insert(0, str(Path(__file__).resolve().parent))
 from clean_station_data import clean_text_id_dataframe  # noqa: E402
 from sentiment_filter import analyze_sentiment_df  # noqa: E402
 
