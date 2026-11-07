@@ -5,7 +5,7 @@
 - **语言环境**：Python 3.11，conda 环境 `station`
 - **依赖**：[`requirements.txt`](requirements.txt)
 - **规模**：34 个项目脚本 + 2 个配置 JSON + 5 个 notebook，另 vendor 了第三方爬虫 Spider_XHS
-- **不在仓库里**：数据（8.4 GB）、模型权重（嵌入 2.3 GB + BERT 390 MB + Qwen3.6-27B 约 52 GB）、论文与插图。这些只在本机保留（`data/`、`papers/` 两个目录），不进仓库
+- **不在仓库里**：数据（8.4 GB）、模型权重（嵌入 2.3 GB + BERT 390 MB + Qwen3.6-27B 约 52 GB）、论文与插图。这些只在本机保留（仓库上一级的 `../data`、`../papers`），不进仓库
 
 ---
 
@@ -194,25 +194,27 @@
 
 ```bash
 conda activate station
-cd ~/Documents/hhgh/station        # 在项目根执行
+cd ~/Documents/hhgh/station/code   # 仓库根
 
 # ① 评论归位（每站一次）
-python code/pipeline/process_comments.py --station xizhan
+python pipeline/process_comments.py --station xizhan
 
 # ② 图文理解（GPU，可断点续跑）
-python code/pipeline/analyze_notes.py --station xizhan
+python pipeline/analyze_notes.py --station xizhan
 
 # ③ 情感判定（全站批量）
-python code/pipeline/run_sentiment.py
+python pipeline/run_sentiment.py
 
 # ④ 报告
-python code/pipeline/generate_report.py --station xizhan
-python code/pipeline/generate_statistics.py
+python pipeline/generate_report.py --station xizhan
+python pipeline/generate_statistics.py
 
 # ⑤ 清洗 → 主题建模 → 论文实验
-python code/topic_modeling/clean_station_data.py
-python code/experiments/rerun_0905.py        # 输出到 data/results/output/0905
+python topic_modeling/clean_station_data.py
+python experiments/rerun_0905.py        # 输出到 ../data/results/output/0905
 ```
+
+> 脚本里的路径常量都基于文件位置推导（`ROOT = 上一级/station`），所以在哪个目录执行都能找到数据；上面以仓库根为例。
 
 站点 key：`xizhan`、`nanzhan`、`beizhan`、`fengtai`、`chaoyang`、`qinghe`、`tongzhou`、`beijing`、`daxingjichang`、`shoudujichang`。
 
