@@ -69,8 +69,8 @@
 | 缺什么 | 说明 |
 |---|---|
 | **Qwen3.6-27B 权重（约 52 GB）** | 不在本机，原在 GPU 服务器 `/home/lu.junting/station/qwen-3.6`。本机 `data/models/` 只存了嵌入模型和 BERT 情感模型 |
-| **9 个站的 `<station>_media/` 素材目录** | 本机只有西站 `data/raw/station_data/XiZhan/XiZhan_media/`（145 个帖子）；另 8 站 + 2 机场的媒体目录不在本机，只有 `data/raw/station_xlsx/<站>/<站>_notes.xlsx` |
-| **各站评论 xlsx** | 本机有西站 `北京西站_comments_合并.xlsx`、朝阳站 `北京朝阳站_comments.xlsx`，其余站点缺 |
+| **7 个站的 `<station>_media/` 素材目录** | 本机有 3 站：西站 145 帖/496 图、南站 126 帖/365 图、朝阳 78 帖/277 图，均已解压到 `raw/station_data/`（zip 另存）。其余 7 站（北京站、北站、丰台、清河、通州、大兴、首都）**只剩 `*_notes.xlsx`，无配图** |
+| **7 个站的评论 xlsx** | 本机有西站、南站、朝阳 3 站（`NanZhan/NanZhan_comments.xlsx`、`ChaoYang/ChaoYang_comments.xlsx`）；其余 7 站没有 |
 
 上游的抓取/落盘工具（生成 `info.json` + `image_*.jpg` 的那一步）不在本仓库，属于外部爬虫，需另行准备。
 
