@@ -22,7 +22,7 @@
 | [`daily_report/`](daily_report) | 2 | 舆情日报批量处理 | 另一条业务线 |
 | [`paper_build/`](paper_build) | 1 | 论文 docx 排版生成 | ✅ 排版时用 |
 | [`notebooks/`](notebooks) | 5 | 探索过程记录 | 历史存档 |
-| [`archive/`](archive/README.md) | 6 | 一次性、已被取代、与论文无关的脚本 | ❌ 确认后可整目录删除 |
+| `archive/` | 6 | 一次性、已被取代、与论文无关的脚本（**只在本地，不进 Git**） | ❌ 确认后可整目录删除 |
 
 `config/` 放站点分析口径（10 类服务环节、影响力权重）与关键词过滤规则，被 `experiments/` 引用。
 
@@ -130,7 +130,7 @@
 | `paper_build/` | `build_paper_docx.py` | 按期刊体例生成论文 docx |
 | `notebooks/` | `a`、`bertop`、`bis`、`comp`、`exp` | 探索过程（主题数、K 值、对比实验草稿） |
 
-已归档的 6 个脚本见 [`archive/README.md`](archive/README.md)。
+已归档的 6 个脚本放在本地 `archive/`（**已加入 .gitignore，不会上传**），清单见该目录下的 `README.md`。
 
 ---
 
@@ -203,7 +203,9 @@ python code/experiments/rerun_0905.py        # 输出到 data/results/output/090
 ## 六、Git
 
 ```bash
-git status       # 只跟踪 code/、根 README.md、.gitignore
+git status       # 只跟踪 code/（不含 archive/）、根 README.md、.gitignore
 ```
+
+`code/archive/` 已在 `.gitignore` 中排除，只在本地保留。
 
 `data/`、`docs/`、`papers/` 已由根目录 `.gitignore` 排除。`__pycache__/`、`*.pyc`、`.ipynb_checkpoints/` 也已忽略。
