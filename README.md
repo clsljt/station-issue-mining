@@ -1,14 +1,60 @@
-# 代码（code/）
+# 重点站区社交媒体舆情分析 · 代码
 
-本项目全部脚本。**这是本仓库唯一纳入 Git 的部分**；数据、模型、文档、论文都留在本地对应目录。
+论文《基于多模态大模型的交通枢纽旅客服务诉求识别研究》的配套代码：用多模态大模型把北京「八站两场」的小红书图文帖，转成可回溯、可比较的服务问题线索。
 
-- 语言：Python 3.11（conda 环境 `station`）
-- 依赖：[`requirements.txt`](requirements.txt)
-- 规模：33 个脚本 + 2 个配置 JSON + 5 个 notebook
+- **语言环境**：Python 3.11，conda 环境 `station`
+- **依赖**：[`requirements.txt`](requirements.txt)
+- **规模**：33 个脚本 + 2 个配置 JSON + 5 个 notebook
+- **不在仓库里**：数据（8.4 GB）、模型权重（嵌入 2.3 GB + BERT 390 MB + Qwen3.6-27B 约 52 GB）、论文与插图。这些只在本机保留（`data/`、`papers/` 两个目录），不进仓库
 
 ---
 
-## 一、目录与职责
+## 一、项目背景
+
+### 问题
+
+北京有「八站两场」——北京站、北京西站、北京南站、北京北站、北京丰台站、北京朝阳站、清河站、通州站，以及大兴、首都两座机场。旅客对站区的真实体验大量沉淀在小红书这类图文平台上：一条帖子里标题、正文、配图、评论区往往同时承载服务场景与情绪表达，攻略、打卡、吐槽互相混杂。
+
+纯文本的舆情分析在这里会失效：只看文字会丢掉画面里的关键信息（排队长度、标识混乱、设施破损），只看单条帖子又还原不了「在哪、发生了什么、影响多大」。结果是线索分散、口径不一，既难以在站区之间横向比较，现场核查时也无法回溯到原始表达。
+
+### 目标
+
+把分散的多模态 UGC 转成**可回溯、可比较**的问题线索，形成「主题语义 — 站区分布 — 关注结构 — 原因可控性」四层画像，支撑现场核查与协同治理。
+
+### 流水线
+
+| 环节 | 做什么 | 代码 / 数据 |
+|---|---|---|
+| ① 采集与清洗 | 10 个站的图文帖、评论、配图落成结构化样本 | 外部爬虫 → `data/raw/station_data/`（1208 帖 / 4084 图） |
+| ② 图文理解 | 一条帖子压成「一段描述 + 一个服务环节标签」 | [`pipeline/analyze_notes.py`](pipeline/analyze_notes.py)（Qwen3.6-27B） |
+| ③ 情感判定 | 正 / 负向，作为问题导向样本的筛选条件 | [`pipeline/run_sentiment.py`](pipeline/run_sentiment.py)（BERT） |
+| ④ 问题导向筛选 | 情感 × 相关性，1208 条 → 293 条 | [`topic_modeling/`](topic_modeling) |
+| ⑤ 主题识别 | 句向量 + K-means，K=10，NPMI 交叉验证 | [`experiments/run_bertopic_293_default.py`](experiments/run_bertopic_293_default.py)（Qwen3-Embedding） |
+| ⑥ 关注结构 | 语义网络 PageRank + 互动量加权，配消融与敏感性检验 | [`experiments/rerun_0905.py`](experiments/rerun_0905.py) |
+| ⑦ 人工核验 | 3 位标注者核验描述、情感、分类、主题命名，算一致性 | `data/annotation/` |
+
+### 数据规模与结果
+
+| 项 | 数值 |
+|---|---|
+| 站点 / 图文帖 / 配图 | 10 / 1208 / 4084 |
+| 问题导向样本 → 服务问题主题 | 293 → 10 |
+| 主题一致性 | NPMI = 0.102 |
+| 站区分布差异 | Cramér's V = 0.602 |
+| 人工评测（服务环节 / 情感 / 问题分类） | 95.6% / 84.3% / 81.9% |
+
+### 论文与作者
+
+《基于多模态大模型的交通枢纽旅客服务诉求识别研究》（1030 稿）
+
+- 陆俊廷、李莉、夏梓溪、杜洋 —— 北京信息科技大学计算机学院
+- 于洋、欧阳杰、胥嘉濛 —— 北京市重点站区管理委员会综合事务中心
+
+> 论文、投稿插图、参考文献不在本仓库，只在本地 `papers/` 保留。
+
+---
+
+## 二、目录与职责
 
 按「是不是每次都要用」分三层：**核心流程** → **论文一次性实验** → **归档**。
 
@@ -28,7 +74,7 @@
 
 ---
 
-## 二、大模型（LLM）部分
+## 三、大模型（LLM）部分
 
 这是整条流水线的核心：**用 Qwen3.6-27B 多模态模型逐帖读图+读文+读评论，产出结构化描述与分类**。
 
@@ -58,12 +104,12 @@
 
 - 模型：`AutoProcessor` + `AutoModelForImageTextToText`，bf16，`device_map="auto"` 多卡自动切分，`enable_thinking=False` 关思考链，`do_sample=False` 保证确定性。
 - 路径：`MODEL_PATH = "/home/lu.junting/station/qwen-3.6"`，**约 52 GB**。
-- Prompt：System + User 两段式。System 定义 17 个分类（10 个站区服务环节 + 4 个小红书内容类 + 3 个无信息类）；User 拼「图片 + 标题 + 正文 + 互动数 + 标签 + 发布时间 + 点赞前 15 条评论」。完整文案见 [`../docs/guides/llmPart_README.md`](../docs/guides/llmPart_README.md)。
+- Prompt：System + User 两段式。System 定义 17 个分类（10 个站区服务环节 + 4 个小红书内容类 + 3 个无信息类）；User 拼「图片 + 标题 + 正文 + 互动数 + 标签 + 发布时间 + 点赞前 15 条评论」。完整文案见本地 `docs/guides/llmPart_README.md`。
 - 解析：三级正则容错，解析失败落 `parse_error` 并用 `xhs_other` 兜底。
 
 ### 输出
 
-`<station>_analysis.json`，之后 `run_sentiment.py` 再补 `sentiment_label` / `sentiment_score` / `business_category_v2`。现有结果在 [`../data/llm_output/llmOutput/`](../data/llm_output/llmOutput/)：10 站、每站 4 个文件。
+`<station>_analysis.json`，之后 `run_sentiment.py` 再补 `sentiment_label` / `sentiment_score` / `business_category_v2`。现有结果在本地 `data/llm_output/llmOutput/`：10 站、每站 4 个文件。
 
 ### ⚠ 重跑前必须自备
 
@@ -78,7 +124,7 @@
 
 ---
 
-## 三、脚本清单
+## 四、脚本清单
 
 ### pipeline/ — 多模态分析流水线（核心）
 
@@ -134,7 +180,7 @@
 
 ---
 
-## 四、运行顺序
+## 五、运行顺序
 
 ```bash
 conda activate station
@@ -162,7 +208,7 @@ python code/experiments/rerun_0905.py        # 输出到 data/results/output/090
 
 ---
 
-## 五、路径与依赖
+## 六、路径与依赖
 
 ### 已修好的部分
 
@@ -200,7 +246,7 @@ python code/experiments/rerun_0905.py        # 输出到 data/results/output/090
 
 ---
 
-## 六、Git
+## 七、Git
 
 ```bash
 git status       # 只跟踪 code/（不含 archive/）、根 README.md、.gitignore
