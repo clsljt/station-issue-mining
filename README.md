@@ -64,15 +64,14 @@
 
 现有结果在 [`../data/llm_output/llmOutput/`](../data/llm_output/llmOutput/)：10 个站、每站 4 个文件（analysis.json + 统计报告 + 舆情分析报告 md/docx）。
 
-### ⚠ 重跑前必须自备的三样东西
+### ⚠ 重跑前必须自备的东西
 
-| 缺什么 | 说明 |
+| 需要什么 | 说明 |
 |---|---|
-| **Qwen3.6-27B 权重（约 52 GB）** | 不在本机，原在 GPU 服务器 `/home/lu.junting/station/qwen-3.6`。本机 `data/models/` 只存了嵌入模型和 BERT 情感模型 |
-| **7 个站的 `<station>_media/` 素材目录** | 本机有 3 站：西站 145 帖/496 图、南站 126 帖/365 图、朝阳 78 帖/277 图，均已解压到 `raw/station_data/`（zip 另存）。其余 7 站（北京站、北站、丰台、清河、通州、大兴、首都）**只剩 `*_notes.xlsx`，无配图** |
-| **7 个站的评论 xlsx** | 本机有西站、南站、朝阳 3 站（`NanZhan/NanZhan_comments.xlsx`、`ChaoYang/ChaoYang_comments.xlsx`）；其余 7 站没有 |
-
-上游的抓取/落盘工具（生成 `info.json` + `image_*.jpg` 的那一步）不在本仓库，属于外部爬虫，需另行准备。
+| **Qwen3.6-27B 权重（约 52 GB）** | 不在本机，原在 GPU 服务器 `/home/lu.junting/station/qwen-3.6`。本机 `data/models/` 只存了嵌入模型与 BERT 情感模型 |
+| **GPU** | A100-80GB（52 GB 权重 bf16 + 4 张图的多模态输入） |
+| **输入素材** | ✅ 已齐全：10 个站的 `<station>_media/` 都在 `data/raw/station_data/`（1208 帖 / 4084 图） |
+| **爬虫脚本** | ❌ 不在仓库，只有爬虫产物；`info.json` + `image_*.jpg` 由外部工具生成 |
 
 > 2026-08-29 的代码快照（`Desktop/station_代码_20260829/`）与输出快照（`Desktop/outputs/`）已逐字节比对，**31/31 代码、46/46 输出与本目录完全一致**，无独有内容，未重复收录。
 
