@@ -258,10 +258,22 @@ python code/experiments/rerun_0905.py        # 输出到 data/results/output/090
 
 ## 七、Git
 
+**本目录就是仓库根**，仓库里没有多余的 `code/` 一层：
+
 ```bash
-git status       # 只跟踪 code/（不含 archive/）、根 README.md、.gitignore
+cd ~/Documents/hhgh/station/code
+git status
+git push
 ```
 
-`code/archive/` 已在 `.gitignore` 中排除，只在本地保留。
+| 项 | 值 |
+|---|---|
+| 远端 | `https://github.com/clsljt/station-issue-mining.git` |
+| 分支 | `main` |
+| SSH | 22 端口被网络阻断，`~/.ssh/config` 里已改成走 `ssh.github.com:443` |
 
-`data/`、`docs/`、`papers/` 已由根目录 `.gitignore` 排除。`__pycache__/`、`*.pyc`、`.ipynb_checkpoints/` 也已忽略。
+不在仓库里的东西：
+
+- `archive/`（本地归档的一次性脚本）——`.gitignore` 已排除
+- `__pycache__/`、`*.pyc`、`.ipynb_checkpoints/`、爬虫的 `.env` 与下载数据
+- 数据（8.4 GB）、模型权重、论文与插图——仍在上一级目录 `../data`、`../papers`，不属于这个仓库

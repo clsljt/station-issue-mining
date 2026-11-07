@@ -1,0 +1,35 @@
+# 本地保留、不入库
+/archive/
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+.ipynb_checkpoints/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+
+# 虚拟环境
+.venv/
+venv/
+env/
+
+# 系统与编辑器
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+*.swp
+*~
+
+# 日志与临时文件
+*.log
+*.tmp
+*.bak
+~$*
+
+# 爬虫运行产物（cookie、会话、下载的数据）
+crawler/Spider_XHS/.env
+crawler/Spider_XHS/datas/
+crawler/Spider_XHS/node_modules/
