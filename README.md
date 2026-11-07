@@ -4,7 +4,7 @@
 
 - **语言环境**：Python 3.11，conda 环境 `station`
 - **依赖**：[`requirements.txt`](requirements.txt)
-- **规模**：33 个脚本 + 2 个配置 JSON + 5 个 notebook
+- **规模**：34 个项目脚本 + 2 个配置 JSON + 5 个 notebook，另 vendor 了第三方爬虫 Spider_XHS
 - **不在仓库里**：数据（8.4 GB）、模型权重（嵌入 2.3 GB + BERT 390 MB + Qwen3.6-27B 约 52 GB）、论文与插图。这些只在本机保留（`data/`、`papers/` 两个目录），不进仓库
 
 ---
@@ -25,7 +25,7 @@
 
 | 环节 | 做什么 | 代码 / 数据 |
 |---|---|---|
-| ① 采集与清洗 | 10 个站的图文帖、评论、配图落成结构化样本 | 外部爬虫 → `data/raw/station_data/`（1208 帖 / 4084 图） |
+| ① 采集与清洗 | 10 个站的图文帖、评论、配图落成结构化样本 | [`crawler/`](crawler)（Spider_XHS）→ `data/raw/station_data/`（1208 帖 / 4084 图） |
 | ② 图文理解 | 一条帖子压成「一段描述 + 一个服务环节标签」 | [`pipeline/analyze_notes.py`](pipeline/analyze_notes.py)（Qwen3.6-27B） |
 | ③ 情感判定 | 正 / 负向，作为问题导向样本的筛选条件 | [`pipeline/run_sentiment.py`](pipeline/run_sentiment.py)（BERT） |
 | ④ 问题导向筛选 | 情感 × 相关性，1208 条 → 293 条 | [`topic_modeling/`](topic_modeling) |
@@ -65,6 +65,7 @@
 | [`experiments/`](experiments) | 9 | 论文实验：0905 重跑、K 值选择、消融、图 3/6/7 | ⚠ 一次性，但论文数字靠它回溯 |
 | [`figures/`](figures) | 2 | 现用插图生成（框架图、热力图） | ✅ 改图时用 |
 | [`tools/`](tools) | 2 | Qwen3-VL 图片描述支线 | 支线，未进论文主线 |
+| [`crawler/`](crawler) | 1 + 第三方 | 小红书采集（vendor 的 Spider_XHS）+ 目录拍平脚本 | 需要补采时才用 |
 | [`daily_report/`](daily_report) | 2 | 舆情日报批量处理 | 另一条业务线 |
 | [`paper_build/`](paper_build) | 1 | 论文 docx 排版生成 | ✅ 排版时用 |
 | [`notebooks/`](notebooks) | 5 | 探索过程记录 | 历史存档 |
@@ -118,7 +119,7 @@
 | **Qwen3.6-27B 权重（约 52 GB）** | 不在本机，原在 GPU 服务器 `/home/lu.junting/station/qwen-3.6`。`data/models/` 只有嵌入模型与 BERT 情感模型 |
 | **GPU** | A100-80GB（52 GB 权重 bf16 + 4 张图的多模态输入） |
 | **输入素材** | ✅ 已齐全：10 个站在 `data/raw/station_data/`（1208 帖 / 4084 图） |
-| **爬虫脚本** | ❌ 不在仓库，只有爬虫产物；`info.json` + `image_*.jpg` 由外部工具生成 |
+| **爬虫脚本** | ✅ 已 vendor 在 [`crawler/Spider_XHS/`](crawler/Spider_XHS)，需自备 cookie 与 Node.js 20+ |
 
 > 2026-08-29 的代码快照（`Desktop/station_代码_20260829/`）与输出快照（`Desktop/outputs/`）已逐字节比对，**31/31 代码、46/46 输出与本目录完全一致**，无独有内容，未重复收录。
 
@@ -162,6 +163,15 @@
 | `paper_common.py` | **公共组件**：数据载入、分词、NPMI、语义网络与 PageRank | — |
 
 > `paper_common.py` 被上面 5 个脚本 import，所以放在同一目录；脚本靠自身所在目录找到它，不依赖外部 `sys.path`。
+
+### crawler/ — 数据采集
+
+| 文件 | 作用 |
+|---|---|
+| `Spider_XHS/` | **第三方**开源爬虫（[cv-cat/Spider_XHS](https://github.com/cv-cat/Spider_XHS)，快照 `23dab80`）。产出 `<昵称>_<user_id>/<标题>_<note_id>/{info.json, detail.txt, image_*.jpg}` |
+| `flatten_notes.py` | 本项目新增：把上面的两级目录拍平成 `<note_id>/`，对齐 `analyze_notes.py` 的输入要求 |
+
+来源、许可、运行方式与合规提醒见 [`crawler/README.md`](crawler/README.md) 和 [`crawler/Spider_XHS/NOTICE.md`](crawler/Spider_XHS/NOTICE.md)。
 
 ### 其余
 
